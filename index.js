@@ -11,11 +11,14 @@ exports.getUserByUsername = username => (
                 const $ = cheerio.load(html);
                 $('body').children().each((i, e) => {
                     eleHTML = $(e).html()
-                    if (eleHTML.indexOf('window._sharedData') > -1) {
-                        resolve(JSON.parse(eleHTML.split('"ProfilePage":[')[1].split(']},"gatekeepers"')[0]).graphql.user);
+                    const htmlContent = eleHTML.split('"ProfilePage":[')[1]
+                    if (eleHTML.indexOf('window._sharedData') > -1&&htmlContent) {
+                        resolve(JSON.parse(htmlContent.split(']},"hostname"')[0]).graphql.user);
                         return false;
                     }
                 })
+                resolve(false)
+                return false;
             }
             else {
                 reject(err);
@@ -34,11 +37,14 @@ exports.getUserIdFromUsername = username => (
 
                 $('body').children().each((i, e) => {
                     eleHTML = $(e).html();
-                    if (eleHTML.indexOf('window._sharedData') > -1) {
-                        resolve(JSON.parse(eleHTML.split('"ProfilePage":[')[1].split(']},"gatekeepers"')[0]).graphql.user.id);
+                    const htmlContent = eleHTML.split('"ProfilePage":[')[1]
+                    if (eleHTML.indexOf('window._sharedData') > -1&&htmlContent) {
+                        resolve(JSON.parse(htmlContent.split(']},"hostname"')[0]).graphql.user.id);
                         return false;
                     }
                 })
+                resolve(false)
+                return false;
             }
             else {
                 reject(err);
@@ -135,11 +141,14 @@ exports.getUserProfilePicture = (username) => (
                 const $ = cheerio.load(html);
                 $('body').children().each((i, e) => {
                     eleHTML = $(e).html()
-                    if (eleHTML.indexOf('window._sharedData') > -1) {
-                        resolve(JSON.parse(eleHTML.split('"ProfilePage":[')[1].split(']},"gatekeepers"')[0]).graphql.user.profile_pic_url_hd)
+                    const htmlContent = eleHTML.split('"ProfilePage":[')[1]
+                    if (eleHTML.indexOf('window._sharedData') > -1&&htmlContent) {
+                        resolve(JSON.parse(htmlContent.split(']},"hostname"')[0]).graphql.user.profile_pic_url_hd)
                         return false;
                     }
                 })
+                resolve(false)
+                return false;
             }
             else
                 reject(err);
