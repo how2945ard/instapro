@@ -117,7 +117,7 @@ exports.getMediaByLocation = (locationId, maxId = '') => (
         .catch(error => error)
 );
 
-exports.getMediaByTag = (tag, maxId = '') => (
+exports.getHashInfoByTag = (tag, maxId = '') => (
     fetch(`https://www.instagram.com/explore/tags/${tag}/?__a=1&max_id=${maxId}`, {
         headers: { Cookie: cookie }
     })
