@@ -40,6 +40,13 @@ exports.getUserIdFromUsername = username => (
     })
 );
 
+exports.getUsenameFromUserID = userID => (
+    request.getAsync({ url: `https://i.instagram.com/api/v1/users/${userID}/info/`, json: true })
+      .then(({body}) => {
+        return body.user;
+      })
+  );
+
 exports.getMediaByCode = shortcode => (
   request.getAsync({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true })
     .then(({ body }) => body.graphql)
