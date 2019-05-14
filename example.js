@@ -1,21 +1,20 @@
 
 
 const {
-    getMediaByCode,
     getUserByUsername,
-    getMediaByLocation,
-    getMediaByTag,
-    getMediaLikesByCode,
-    getMediaCommentsByCode,
-    generalSearch,
     getUserIdFromUsername,
-    getUserProfilePicture,
+    getMediaByCode,
+    getMediaCommentsByCode,
     getTaggedUsersByCode,
-    getMediaOwnerByCode
-  } = require('./index');
+    getMediaLikesByCode,
+    getMediaOwnerByCode,
+    getMediaByLocation,
+    getHashInfoByTag,
+    generalSearch,
+} = require('./index');
 
 getUserByUsername('instagram').then((user) => {
-    console.log(user)
+    console.log(JSON.stringify(user, null, 2))
 })
 
 getUserIdFromUsername('instagram').then((id) => {
@@ -36,19 +35,15 @@ getMediaByLocation('292188415').then(({ location }) => {
     console.log(location.slug)
 })
 
-getMediaByTag('abcd').then((media) => {
-    console.log(media)
-})
-
 generalSearch('insta').then((results) => {
     console.log(results)
 })
 
-getUserProfilePicture('instagram').then((url) => {
-    console.log(url)
+getMediaLikesByCode('BUu14BdBkO5').then((media) => {
+    console.log(media)
 })
 
-getMediaLikesByCode('BUu14BdBkO5').then((media) => {
+getHashInfoByTag('ig').then((media) => {
     console.log(media)
 })
 
