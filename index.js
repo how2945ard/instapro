@@ -82,7 +82,7 @@ exports.getMediaCommentsByCode = shortcode =>
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
         }
-        return body.graphql.shortcode_media.edge_media_to_comment;
+        return body.graphql.shortcode_media.edge_media_to_comment || body.graphql.shortcode_media.edge_media_to_parent_comment;
       })
       .catch(error => error)
   ), {
