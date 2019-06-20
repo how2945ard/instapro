@@ -1,3 +1,4 @@
+
 const BlueBird = require('bluebird');
 const bluebirdRetry = require('bluebird-retry');
 
@@ -65,15 +66,18 @@ exports.getMediaByCode = shortcode =>
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
         }
-        return body.graphql;
+        const response = _.get(body, 'graphql');
+        if (response) {
+          return response;
+        }
+        throw new APIError(`Unexpected response body ${JSON.stringify(body)}`);
       })
-      .catch(error => error)
   ), {
-      max_tries: 3,
-      throw_original: true,
-      interval: 1000,
-      backoff: 2,
-    });
+    max_tries: 3,
+    throw_original: true,
+    interval: 1000,
+    backoff: 2,
+  });
 
 exports.getMediaCommentsByCode = shortcode =>
   bluebirdRetry(() => (
@@ -82,15 +86,18 @@ exports.getMediaCommentsByCode = shortcode =>
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
         }
-        return body.graphql.shortcode_media.edge_media_to_comment || body.graphql.shortcode_media.edge_media_to_parent_comment;
+        const response = _.get(body, 'graphql.shortcode_media.edge_media_to_comment') || _.get(body, 'graphql.shortcode_media.edge_media_to_parent_comment');
+        if (response) {
+          return response;
+        }
+        throw new APIError(`Unexpected response body ${JSON.stringify(body)}`);
       })
-      .catch(error => error)
   ), {
-      max_tries: 3,
-      throw_original: true,
-      interval: 1000,
-      backoff: 2,
-    });
+    max_tries: 3,
+    throw_original: true,
+    interval: 1000,
+    backoff: 2,
+  });
 
 exports.getUsenameFromUserID = userID =>
   bluebirdRetry(() => (
@@ -99,14 +106,18 @@ exports.getUsenameFromUserID = userID =>
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
         }
-        return body.user;
+        const response = _.get(body, 'user');
+        if (response) {
+          return response;
+        }
+        throw new APIError(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
-      max_tries: 3,
-      throw_original: true,
-      interval: 1000,
-      backoff: 2,
-    });
+    max_tries: 3,
+    throw_original: true,
+    interval: 1000,
+    backoff: 2,
+  });
 
 exports.getTaggedUsersByCode = shortcode =>
   bluebirdRetry(() => (
@@ -115,16 +126,18 @@ exports.getTaggedUsersByCode = shortcode =>
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
         }
-        return body.graphql.shortcode_media.edge_media_to_tagged_user;
+        const response = _.get(body, 'graphql.shortcode_media.edge_media_to_tagged_user');
+        if (response) {
+          return response;
+        }
+        throw new APIError(`Unexpected response body ${JSON.stringify(body)}`);
       })
-      .catch(error => error)
   ), {
-      max_tries: 3,
-      throw_original: true,
-      interval: 1000,
-      backoff: 2,
-    });
-
+    max_tries: 3,
+    throw_original: true,
+    interval: 1000,
+    backoff: 2,
+  });
 
 exports.getMediaLikesByCode = shortcode => bluebirdRetry(() => (
   request.getAsync({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true })
@@ -132,16 +145,18 @@ exports.getMediaLikesByCode = shortcode => bluebirdRetry(() => (
       if (body === 'Oops, an error occurred.\n') {
         throw new APIError('Oops, an error occurred.');
       }
-      return body.graphql.shortcode_media.edge_media_preview_like;
+      const response = _.get(body, 'graphql.shortcode_media.edge_media_preview_like');
+      if (response) {
+        return response;
+      }
+      throw new APIError(`Unexpected response body ${JSON.stringify(body)}`);
     })
-    .catch(error => error)
 ), {
-    max_tries: 3,
-    throw_original: true,
-    interval: 1000,
-    backoff: 2,
-  });
-
+  max_tries: 3,
+  throw_original: true,
+  interval: 1000,
+  backoff: 2,
+});
 
 exports.getMediaOwnerByCode = shortcode => bluebirdRetry(() => (
   request.getAsync({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true })
@@ -149,15 +164,18 @@ exports.getMediaOwnerByCode = shortcode => bluebirdRetry(() => (
       if (body === 'Oops, an error occurred.\n') {
         throw new APIError('Oops, an error occurred.');
       }
-      return body.graphql.shortcode_media.owner;
+      const response = _.get(body, 'graphql.shortcode_media.owner');
+      if (response) {
+        return response;
+      }
+      throw new APIError(`Unexpected response body ${JSON.stringify(body)}`);
     })
-    .catch(error => error)
 ), {
-    max_tries: 3,
-    throw_original: true,
-    interval: 1000,
-    backoff: 2,
-  });
+  max_tries: 3,
+  throw_original: true,
+  interval: 1000,
+  backoff: 2,
+});
 
 
 exports.getMediaByLocation = (locationId, maxId = '') =>
@@ -167,16 +185,18 @@ exports.getMediaByLocation = (locationId, maxId = '') =>
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
         }
-        return body.graphql;
+        const response = _.get(body, 'graphql');
+        if (response) {
+          return response;
+        }
+        throw new APIError(`Unexpected response body ${JSON.stringify(body)}`);
       })
-      .catch(error => error)
   ), {
-      max_tries: 3,
-      throw_original: true,
-      interval: 1000,
-      backoff: 2,
-    });
-
+    max_tries: 3,
+    throw_original: true,
+    interval: 1000,
+    backoff: 2,
+  });
 
 exports.getHashInfoByTag = (tag, maxId = '') =>
   bluebirdRetry(() => (
@@ -185,15 +205,18 @@ exports.getHashInfoByTag = (tag, maxId = '') =>
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
         }
-        return body.graphql;
+        const response = _.get(body, 'graphql');
+        if (response) {
+          return response;
+        }
+        throw new APIError(`Unexpected response body ${JSON.stringify(body)}`);
       })
-      .catch(error => error)
   ), {
-      max_tries: 3,
-      throw_original: true,
-      interval: 1000,
-      backoff: 2,
-    });
+    max_tries: 3,
+    throw_original: true,
+    interval: 1000,
+    backoff: 2,
+  });
 
 
 exports.generalSearch = query =>
@@ -205,11 +228,9 @@ exports.generalSearch = query =>
         }
         return body;
       })
-      .catch(error => error), {
-      max_tries: 3,
-      throw_original: true,
-      interval: 1000,
-      backoff: 2,
-    })
-  )
-
+  ), {
+    max_tries: 3,
+    throw_original: true,
+    interval: 1000,
+    backoff: 2,
+  });
