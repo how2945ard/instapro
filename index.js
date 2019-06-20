@@ -1,3 +1,26 @@
+function createErrorClass(name, init) {
+  function Err(message) {
+    Error.captureStackTrace(this, this.constructor);
+    this.message = message;
+    return init && init.apply(this, arguments);//  eslint-disable-line
+  }
+  Err.prototype = new Error();
+  Err.prototype.name = name;
+  Err.prototype.constructor = Err;
+  return Err;
+}
+global.APIError = createErrorClass(
+  'APIError',
+  function APIError(message) {
+    this.message = `APIError ${message}`;
+  },
+);
+global.UnexpectedResponseStructure = createErrorClass(
+  'UnexpectedResponseStructure',
+  function UnexpectedResponseStructure() {
+    this.message = 'UnexpectedResponseStructure';
+  },
+);
 
 const BlueBird = require('bluebird');
 const bluebirdRetry = require('bluebird-retry');
@@ -70,7 +93,7 @@ exports.getMediaByCode = shortcode =>
         if (response) {
           return response;
         }
-        throw new APIError(`Unexpected response body ${JSON.stringify(body)}`);
+        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
     max_tries: 3,
@@ -90,7 +113,7 @@ exports.getMediaCommentsByCode = shortcode =>
         if (response) {
           return response;
         }
-        throw new APIError(`Unexpected response body ${JSON.stringify(body)}`);
+        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
     max_tries: 3,
@@ -110,7 +133,7 @@ exports.getUsenameFromUserID = userID =>
         if (response) {
           return response;
         }
-        throw new APIError(`Unexpected response body ${JSON.stringify(body)}`);
+        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
     max_tries: 3,
@@ -130,7 +153,7 @@ exports.getTaggedUsersByCode = shortcode =>
         if (response) {
           return response;
         }
-        throw new APIError(`Unexpected response body ${JSON.stringify(body)}`);
+        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
     max_tries: 3,
@@ -149,7 +172,7 @@ exports.getMediaLikesByCode = shortcode => bluebirdRetry(() => (
       if (response) {
         return response;
       }
-      throw new APIError(`Unexpected response body ${JSON.stringify(body)}`);
+      throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
     })
 ), {
   max_tries: 3,
@@ -168,7 +191,7 @@ exports.getMediaOwnerByCode = shortcode => bluebirdRetry(() => (
       if (response) {
         return response;
       }
-      throw new APIError(`Unexpected response body ${JSON.stringify(body)}`);
+      throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
     })
 ), {
   max_tries: 3,
@@ -189,7 +212,7 @@ exports.getMediaByLocation = (locationId, maxId = '') =>
         if (response) {
           return response;
         }
-        throw new APIError(`Unexpected response body ${JSON.stringify(body)}`);
+        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
     max_tries: 3,
@@ -209,7 +232,7 @@ exports.getHashInfoByTag = (tag, maxId = '') =>
         if (response) {
           return response;
         }
-        throw new APIError(`Unexpected response body ${JSON.stringify(body)}`);
+        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
     max_tries: 3,
