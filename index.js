@@ -17,8 +17,8 @@ global.APIError = createErrorClass(
 );
 global.UnexpectedResponseStructure = createErrorClass(
   'UnexpectedResponseStructure',
-  function UnexpectedResponseStructure() {
-    this.message = 'UnexpectedResponseStructure';
+  function UnexpectedResponseStructure(message) {
+    this.message = `UnexpectedResponseStructure ${message}`;
   },
 );
 
