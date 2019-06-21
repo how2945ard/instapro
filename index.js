@@ -93,6 +93,7 @@ exports.getMediaByCode = shortcode =>
         if (response) {
           return response;
         }
+        console.error(`getMediaByCode - Unexpected response body ${JSON.stringify(body)}`)
         throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
@@ -113,6 +114,7 @@ exports.getMediaCommentsByCode = shortcode =>
         if (response) {
           return response;
         }
+        console.error(`getMediaCommentsByCode - Unexpected response body ${JSON.stringify(body)}`)
         throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
@@ -133,6 +135,7 @@ exports.getUsenameFromUserID = userID =>
         if (response) {
           return response;
         }
+        console.error(`getUsenameFromUserID - Unexpected response body ${JSON.stringify(body)}`)
         throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
@@ -153,6 +156,7 @@ exports.getTaggedUsersByCode = shortcode =>
         if (response) {
           return response;
         }
+        console.error(`getTaggedUsersByCode - Unexpected response body ${JSON.stringify(body)}`)
         throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
@@ -172,6 +176,7 @@ exports.getMediaLikesByCode = shortcode => bluebirdRetry(() => (
       if (response) {
         return response;
       }
+      console.error(`getMediaLikesByCode - Unexpected response body ${JSON.stringify(body)}`)
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
     })
 ), {
@@ -191,6 +196,7 @@ exports.getMediaOwnerByCode = shortcode => bluebirdRetry(() => (
       if (response) {
         return response;
       }
+      console.error(`getMediaOwnerByCode - Unexpected response body ${JSON.stringify(body)}`)
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
     })
 ), {
@@ -212,6 +218,7 @@ exports.getMediaByLocation = (locationId, maxId = '') =>
         if (response) {
           return response;
         }
+        console.error(`getMediaByLocation - Unexpected response body ${JSON.stringify(body)}`)
         throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
@@ -232,6 +239,7 @@ exports.getHashInfoByTag = (tag, maxId = '') =>
         if (response) {
           return response;
         }
+        console.error(`getHashInfoByTag - Unexpected response body ${JSON.stringify(body)}`)
         throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
