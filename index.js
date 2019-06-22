@@ -17,9 +17,8 @@ global.APIError = createErrorClass(
 );
 global.UnexpectedResponseStructure = createErrorClass(
   'UnexpectedResponseStructure',
-  function UnexpectedResponseStructure(message, body) {
+  function UnexpectedResponseStructure(message) {
     this.message = `UnexpectedResponseStructure ${message}`;
-    this.originalBody = body
   },
 );
 
@@ -95,7 +94,7 @@ exports.getMediaByCode = shortcode =>
           return response;
         }
         console.error(`getMediaByCode - Unexpected response body ${JSON.stringify(body)}`)
-        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`, body);
+        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
       max_tries: 3,
@@ -116,7 +115,7 @@ exports.getMediaCommentsByCode = shortcode =>
           return response;
         }
         console.error(`getMediaCommentsByCode - Unexpected response body ${JSON.stringify(body)}`)
-        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`, body);
+        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
       max_tries: 3,
@@ -137,7 +136,7 @@ exports.getUsenameFromUserID = userID =>
           return response;
         }
         console.error(`getUsenameFromUserID - Unexpected response body ${JSON.stringify(body)}`)
-        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`, body);
+        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
       max_tries: 3,
@@ -158,7 +157,7 @@ exports.getTaggedUsersByCode = shortcode =>
           return response;
         }
         console.error(`getTaggedUsersByCode - Unexpected response body ${JSON.stringify(body)}`)
-        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`, body);
+        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
       max_tries: 3,
@@ -178,7 +177,7 @@ exports.getMediaLikesByCode = shortcode => bluebirdRetry(() => (
         return response;
       }
       console.error(`getMediaLikesByCode - Unexpected response body ${JSON.stringify(body)}`)
-      throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`, body);
+      throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
     })
 ), {
     max_tries: 3,
@@ -198,7 +197,7 @@ exports.getMediaOwnerByCode = shortcode => bluebirdRetry(() => (
         return response;
       }
       console.error(`getMediaOwnerByCode - Unexpected response body ${JSON.stringify(body)}`)
-      throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`, body);
+      throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
     })
 ), {
     max_tries: 3,
@@ -220,7 +219,7 @@ exports.getMediaByLocation = (locationId, maxId = '') =>
           return response;
         }
         console.error(`getMediaByLocation - Unexpected response body ${JSON.stringify(body)}`)
-        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`, body);
+        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
       max_tries: 3,
@@ -241,7 +240,7 @@ exports.getHashInfoByTag = (tag, maxId = '') =>
           return response;
         }
         console.error(`getHashInfoByTag - Unexpected response body ${JSON.stringify(body)}`)
-        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`, body);
+        throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
       max_tries: 3,
