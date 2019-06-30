@@ -34,9 +34,9 @@ const cheerio = require('cheerio');
 
 const cookie = 'ig_pr=2';
 
-exports.getUserByUsername = username => bluebirdRetry(
+const getUserByUsername = exports.getUserByUsername = ({ username, proxy }) => bluebirdRetry(
   () => (
-    request.getAsync({ url: `http://www.instagram.com/${urlencode(username)}`, json: true })
+    request.getAsync(_.omitBy({ url: `http://www.instagram.com/${urlencode(username)}`, json: true, proxy: proxy }, x => x === null || x === undefined))
       .then(({ body }) => {
         const $ = cheerio.load(body);
         let user = {};
@@ -58,9 +58,9 @@ exports.getUserByUsername = username => bluebirdRetry(
   },
 );
 
-exports.getUserIdFromUsername = username => bluebirdRetry(
+exports.getUserIdFromUsername = ({ username, proxy }) => bluebirdRetry(
   () => (
-    request.getAsync({ url: `http://www.instagram.com/${urlencode(username)}`, json: true })
+    request.getAsync(_.omitBy({ url: `http://www.instagram.com/${urlencode(username)}`, json: true, proxy: proxy }, x => x === null || x === undefined))
       .then(({ body }) => {
         const $ = cheerio.load(body);
         let user = {};
@@ -82,9 +82,9 @@ exports.getUserIdFromUsername = username => bluebirdRetry(
   },
 );
 
-exports.getMediaByCode = shortcode =>
+exports.getMediaByCode = ({ shortcode, proxy }) =>
   bluebirdRetry(() => (
-    request.getAsync({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true })
+    request.getAsync(_.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy: proxy }, x => x === null || x === undefined))
       .then(({ body }) => {
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
@@ -103,9 +103,9 @@ exports.getMediaByCode = shortcode =>
       backoff: 2,
     });
 
-exports.getMediaCommentsByCode = shortcode =>
+exports.getMediaCommentsByCode = ({ shortcode, proxy }) =>
   bluebirdRetry(() => (
-    request.getAsync({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true })
+    request.getAsync(_.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy: proxy }, x => x === null || x === undefined))
       .then(({ body }) => {
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
@@ -124,9 +124,9 @@ exports.getMediaCommentsByCode = shortcode =>
       backoff: 2,
     });
 
-exports.getUsenameFromUserID = userID =>
+exports.getUsenameFromUserID = ({ userID, proxy }) =>
   bluebirdRetry(() => (
-    request.getAsync({ url: `https://i.instagram.com/api/v1/users/${userID}/info/`, json: true })
+    request.getAsync(_.omitBy({ url: `https://i.instagram.com/api/v1/users/${userID}/info/`, json: true, proxy: proxy }, x => x === null || x === undefined))
       .then(({ body }) => {
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
@@ -145,9 +145,9 @@ exports.getUsenameFromUserID = userID =>
       backoff: 2,
     });
 
-exports.getTaggedUsersByCode = shortcode =>
+exports.getTaggedUsersByCode = ({ shortcode, proxy }) =>
   bluebirdRetry(() => (
-    request.getAsync({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true })
+    request.getAsync(_.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy: proxy }, x => x === null || x === undefined))
       .then(({ body }) => {
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
@@ -166,8 +166,8 @@ exports.getTaggedUsersByCode = shortcode =>
       backoff: 2,
     });
 
-exports.getMediaLikesByCode = shortcode => bluebirdRetry(() => (
-  request.getAsync({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true })
+exports.getMediaLikesByCode = ({ shortcode, proxy }) => bluebirdRetry(() => (
+  request.getAsync(_.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy: proxy }, x => x === null || x === undefined))
     .then(({ body }) => {
       if (body === 'Oops, an error occurred.\n') {
         throw new APIError('Oops, an error occurred.');
@@ -186,8 +186,8 @@ exports.getMediaLikesByCode = shortcode => bluebirdRetry(() => (
     backoff: 2,
   });
 
-exports.getMediaOwnerByCode = shortcode => bluebirdRetry(() => (
-  request.getAsync({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true })
+exports.getMediaOwnerByCode = ({ shortcode, proxy }) => bluebirdRetry(() => (
+  request.getAsync(_.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy: proxy }, x => x === null || x === undefined))
     .then(({ body }) => {
       if (body === 'Oops, an error occurred.\n') {
         throw new APIError('Oops, an error occurred.');
@@ -207,9 +207,9 @@ exports.getMediaOwnerByCode = shortcode => bluebirdRetry(() => (
   });
 
 
-exports.getMediaByLocation = (locationId, maxId = '') =>
+exports.getMediaByLocation = ({ locationId, maxId = '', proxy }) =>
   bluebirdRetry(() => (
-    request.getAsync({ url: `https://www.instagram.com/explore/locations/${locationId}/?__a=1&max_id=${maxId}`, json: true })
+    request.getAsync(_.omitBy({ url: `https://www.instagram.com/explore/locations/${locationId}/?__a=1&max_id=${maxId}`, json: true, proxy: proxy }, x => x === null || x === undefined))
       .then(({ body }) => {
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
@@ -228,9 +228,9 @@ exports.getMediaByLocation = (locationId, maxId = '') =>
       backoff: 2,
     });
 
-exports.getHashInfoByTag = (tag, maxId = '') =>
+exports.getHashInfoByTag = ({ tag, maxId = '', proxy }) =>
   bluebirdRetry(() => (
-    request.getAsync({ url: `https://www.instagram.com/explore/tags/${urlencode(tag)}/?__a=1&max_id=${maxId}`, json: true })
+    request.getAsync(_.omitBy({ url: `https://www.instagram.com/explore/tags/${urlencode(tag)}/?__a=1&max_id=${maxId}`, json: true, proxy: proxy }, x => x === null || x === undefined))
       .then(({ body }) => {
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
@@ -250,9 +250,9 @@ exports.getHashInfoByTag = (tag, maxId = '') =>
     });
 
 
-exports.generalSearch = query =>
+exports.generalSearch = ({ query, proxy }) =>
   bluebirdRetry(() => (
-    request.getAsync({ url: `https://www.instagram.com/web/search/topsearch/?query=${urlencode(query)}`, json: true })
+    request.getAsync(_.omitBy({ url: `https://www.instagram.com/web/search/topsearch/?query=${urlencode(query)}`, json: true, proxy: proxy }, x => x === null || x === undefined))
       .then(({ body }) => {
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
