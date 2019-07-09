@@ -93,6 +93,10 @@ exports.getMediaByCode = ({ shortcode, proxy }) =>
         if (response) {
           return response;
         }
+        if (_.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.')) {
+          return null;
+        }
+
         console.error(`getMediaByCode - Unexpected response body ${JSON.stringify(body)}`)
         throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
@@ -114,6 +118,10 @@ exports.getMediaCommentsByCode = ({ shortcode, proxy }) =>
         if (response) {
           return response;
         }
+        if (_.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.')) {
+          return null;
+        }
+
         console.error(`getMediaCommentsByCode - Unexpected response body ${JSON.stringify(body)}`)
         throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
@@ -156,6 +164,10 @@ exports.getTaggedUsersByCode = ({ shortcode, proxy }) =>
         if (response) {
           return response;
         }
+        if (_.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.')) {
+          return null;
+        }
+
         console.error(`getTaggedUsersByCode - Unexpected response body ${JSON.stringify(body)}`)
         throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
@@ -176,6 +188,10 @@ exports.getMediaLikesByCode = ({ shortcode, proxy }) => bluebirdRetry(() => (
       if (response) {
         return response;
       }
+      if (_.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.')) {
+        return null;
+      }
+
       console.error(`getMediaLikesByCode - Unexpected response body ${JSON.stringify(body)}`)
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
     })
@@ -196,6 +212,10 @@ exports.getMediaOwnerByCode = ({ shortcode, proxy }) => bluebirdRetry(() => (
       if (response) {
         return response;
       }
+      if (_.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.')) {
+        return null;
+      }
+
       console.error(`getMediaOwnerByCode - Unexpected response body ${JSON.stringify(body)}`)
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
     })
