@@ -93,7 +93,10 @@ exports.getMediaByCode = ({ shortcode, proxy }) =>
         if (response) {
           return response;
         }
-        if (_.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.')) {
+        if (
+          _.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.') ||
+          _.includes(JSON.stringify(body), 'Page Not Found')
+        ) {
           return null;
         }
         if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
@@ -122,7 +125,10 @@ exports.getMediaCommentsByCode = ({ shortcode, proxy }) =>
         if (response) {
           return response;
         }
-        if (_.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.')) {
+        if (
+          _.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.') ||
+          _.includes(JSON.stringify(body), 'Page Not Found')
+        ) {
           return null;
         }
         if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
@@ -151,6 +157,12 @@ exports.getUsenameFromUserID = ({ userID, proxy }) =>
         if (response) {
           return response;
         }
+        if (
+          _.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.') ||
+          _.includes(JSON.stringify(body), 'Page Not Found')
+        ) {
+          return null;
+        }
         if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
           console.log('Delaying request for 5 seconds')
           await BlueBird.delay(5000);
@@ -177,7 +189,10 @@ exports.getTaggedUsersByCode = ({ shortcode, proxy }) =>
         if (response) {
           return response;
         }
-        if (_.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.')) {
+        if (
+          _.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.') ||
+          _.includes(JSON.stringify(body), 'Page Not Found')
+        ) {
           return null;
         }
         if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
@@ -205,7 +220,10 @@ exports.getMediaLikesByCode = ({ shortcode, proxy }) => bluebirdRetry(() => (
       if (response) {
         return response;
       }
-      if (_.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.')) {
+      if (
+        _.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.') ||
+        _.includes(JSON.stringify(body), 'Page Not Found')
+      ) {
         return null;
       }
       if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
@@ -233,7 +251,10 @@ exports.getMediaOwnerByCode = ({ shortcode, proxy }) => bluebirdRetry(() => (
       if (response) {
         return response;
       }
-      if (_.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.')) {
+      if (
+        _.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.') ||
+        _.includes(JSON.stringify(body), 'Page Not Found')
+      ) {
         return null;
       }
       if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
@@ -263,6 +284,12 @@ exports.getMediaByLocation = ({ locationId, maxId = '', proxy }) =>
         if (response) {
           return response;
         }
+        if (
+          _.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.') ||
+          _.includes(JSON.stringify(body), 'Page Not Found')
+        ) {
+          return null;
+        }
         if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
           console.log('Delaying request for 5 seconds')
           await BlueBird.delay(5000);
@@ -288,6 +315,12 @@ exports.getHashInfoByTag = ({ tag, maxId = '', proxy }) =>
         const response = _.get(body, 'graphql');
         if (response) {
           return response;
+        }
+        if (
+          _.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.') ||
+          _.includes(JSON.stringify(body), 'Page Not Found')
+        ) {
+          return null;
         }
         if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
           console.log('Delaying request for 5 seconds')
