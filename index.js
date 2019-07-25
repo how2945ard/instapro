@@ -85,7 +85,7 @@ exports.getUserIdFromUsername = ({ username, proxy }) => bluebirdRetry(
 exports.getMediaByCode = ({ shortcode, proxy }) =>
   bluebirdRetry(() => (
     request.getAsync(_.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy: proxy }, x => x === null || x === undefined))
-      .then(({ body }) => {
+      .then(async ({ body }) => {
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
         }
@@ -95,6 +95,10 @@ exports.getMediaByCode = ({ shortcode, proxy }) =>
         }
         if (_.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.')) {
           return null;
+        }
+        if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
+          console.log('Delaying request for 5 seconds')
+          await BlueBird.delay(5000);
         }
 
         console.error(`getMediaByCode - Unexpected response body ${JSON.stringify(body)}`)
@@ -110,7 +114,7 @@ exports.getMediaByCode = ({ shortcode, proxy }) =>
 exports.getMediaCommentsByCode = ({ shortcode, proxy }) =>
   bluebirdRetry(() => (
     request.getAsync(_.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy: proxy }, x => x === null || x === undefined))
-      .then(({ body }) => {
+      .then(async ({ body }) => {
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
         }
@@ -120,6 +124,10 @@ exports.getMediaCommentsByCode = ({ shortcode, proxy }) =>
         }
         if (_.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.')) {
           return null;
+        }
+        if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
+          console.log('Delaying request for 5 seconds')
+          await BlueBird.delay(5000);
         }
 
         console.error(`getMediaCommentsByCode - Unexpected response body ${JSON.stringify(body)}`)
@@ -135,7 +143,7 @@ exports.getMediaCommentsByCode = ({ shortcode, proxy }) =>
 exports.getUsenameFromUserID = ({ userID, proxy }) =>
   bluebirdRetry(() => (
     request.getAsync(_.omitBy({ url: `https://i.instagram.com/api/v1/users/${userID}/info/`, json: true, proxy: proxy }, x => x === null || x === undefined))
-      .then(({ body }) => {
+      .then(async ({ body }) => {
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
         }
@@ -143,6 +151,11 @@ exports.getUsenameFromUserID = ({ userID, proxy }) =>
         if (response) {
           return response;
         }
+        if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
+          console.log('Delaying request for 5 seconds')
+          await BlueBird.delay(5000);
+        }
+
         console.error(`getUsenameFromUserID - Unexpected response body ${JSON.stringify(body)}`)
         throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
@@ -156,7 +169,7 @@ exports.getUsenameFromUserID = ({ userID, proxy }) =>
 exports.getTaggedUsersByCode = ({ shortcode, proxy }) =>
   bluebirdRetry(() => (
     request.getAsync(_.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy: proxy }, x => x === null || x === undefined))
-      .then(({ body }) => {
+      .then(async ({ body }) => {
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
         }
@@ -166,6 +179,10 @@ exports.getTaggedUsersByCode = ({ shortcode, proxy }) =>
         }
         if (_.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.')) {
           return null;
+        }
+        if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
+          console.log('Delaying request for 5 seconds')
+          await BlueBird.delay(5000);
         }
 
         console.error(`getTaggedUsersByCode - Unexpected response body ${JSON.stringify(body)}`)
@@ -180,7 +197,7 @@ exports.getTaggedUsersByCode = ({ shortcode, proxy }) =>
 
 exports.getMediaLikesByCode = ({ shortcode, proxy }) => bluebirdRetry(() => (
   request.getAsync(_.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy: proxy }, x => x === null || x === undefined))
-    .then(({ body }) => {
+    .then(async ({ body }) => {
       if (body === 'Oops, an error occurred.\n') {
         throw new APIError('Oops, an error occurred.');
       }
@@ -190,6 +207,10 @@ exports.getMediaLikesByCode = ({ shortcode, proxy }) => bluebirdRetry(() => (
       }
       if (_.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.')) {
         return null;
+      }
+      if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
+        console.log('Delaying request for 5 seconds')
+        await BlueBird.delay(5000);
       }
 
       console.error(`getMediaLikesByCode - Unexpected response body ${JSON.stringify(body)}`)
@@ -204,7 +225,7 @@ exports.getMediaLikesByCode = ({ shortcode, proxy }) => bluebirdRetry(() => (
 
 exports.getMediaOwnerByCode = ({ shortcode, proxy }) => bluebirdRetry(() => (
   request.getAsync(_.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy: proxy }, x => x === null || x === undefined))
-    .then(({ body }) => {
+    .then(async ({ body }) => {
       if (body === 'Oops, an error occurred.\n') {
         throw new APIError('Oops, an error occurred.');
       }
@@ -214,6 +235,10 @@ exports.getMediaOwnerByCode = ({ shortcode, proxy }) => bluebirdRetry(() => (
       }
       if (_.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.')) {
         return null;
+      }
+      if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
+        console.log('Delaying request for 5 seconds')
+        await BlueBird.delay(5000);
       }
 
       console.error(`getMediaOwnerByCode - Unexpected response body ${JSON.stringify(body)}`)
@@ -230,7 +255,7 @@ exports.getMediaOwnerByCode = ({ shortcode, proxy }) => bluebirdRetry(() => (
 exports.getMediaByLocation = ({ locationId, maxId = '', proxy }) =>
   bluebirdRetry(() => (
     request.getAsync(_.omitBy({ url: `https://www.instagram.com/explore/locations/${locationId}/?__a=1&max_id=${maxId}`, json: true, proxy: proxy }, x => x === null || x === undefined))
-      .then(({ body }) => {
+      .then(async ({ body }) => {
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
         }
@@ -238,6 +263,11 @@ exports.getMediaByLocation = ({ locationId, maxId = '', proxy }) =>
         if (response) {
           return response;
         }
+        if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
+          console.log('Delaying request for 5 seconds')
+          await BlueBird.delay(5000);
+        }
+
         console.error(`getMediaByLocation - Unexpected response body ${JSON.stringify(body)}`)
         throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
@@ -251,7 +281,7 @@ exports.getMediaByLocation = ({ locationId, maxId = '', proxy }) =>
 exports.getHashInfoByTag = ({ tag, maxId = '', proxy }) =>
   bluebirdRetry(() => (
     request.getAsync(_.omitBy({ url: `https://www.instagram.com/explore/tags/${urlencode(tag)}/?__a=1&max_id=${maxId}`, json: true, proxy: proxy }, x => x === null || x === undefined))
-      .then(({ body }) => {
+      .then(async ({ body }) => {
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
         }
@@ -259,6 +289,11 @@ exports.getHashInfoByTag = ({ tag, maxId = '', proxy }) =>
         if (response) {
           return response;
         }
+        if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
+          console.log('Delaying request for 5 seconds')
+          await BlueBird.delay(5000);
+        }
+
         console.error(`getHashInfoByTag - Unexpected response body ${JSON.stringify(body)}`)
         throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
@@ -269,10 +304,12 @@ exports.getHashInfoByTag = ({ tag, maxId = '', proxy }) =>
       backoff: 2,
     });
 
-
 exports.generalSearch = ({ query, proxy }) =>
   bluebirdRetry(() => (
-    request.getAsync(_.omitBy({ url: `https://www.instagram.com/web/search/topsearch/?query=${urlencode(query)}`, json: true, proxy: proxy }, x => x === null || x === undefined))
+    request.getAsync(
+      _.omitBy(
+        { url: `https://www.instagram.com/web/search/topsearch/?query=${urlencode(query)}`, json: true, proxy: proxy },
+        x => x === null || x === undefined))
       .then(({ body }) => {
         if (body === 'Oops, an error occurred.\n') {
           throw new APIError('Oops, an error occurred.');
