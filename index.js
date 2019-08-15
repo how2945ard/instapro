@@ -53,7 +53,7 @@ const getUserByUsername = exports.getUserByUsername = ({ username, proxy }) => b
   ), {
     max_tries: 3,
     throw_original: true,
-    interval: 1000,
+    interval: 5000,
     backoff: 2,
   },
 );
@@ -77,7 +77,7 @@ exports.getUserIdFromUsername = ({ username, proxy }) => bluebirdRetry(
   ), {
     max_tries: 3,
     throw_original: true,
-    interval: 1000,
+    interval: 5000,
     backoff: 2,
   },
 );
@@ -110,7 +110,7 @@ exports.getMediaByCode = ({ shortcode, proxy }) =>
   ), {
       max_tries: 3,
       throw_original: true,
-      interval: 1000,
+      interval: 5000,
       backoff: 2,
     });
 
@@ -142,11 +142,11 @@ exports.getMediaCommentsByCode = ({ shortcode, proxy }) =>
   ), {
       max_tries: 3,
       throw_original: true,
-      interval: 1000,
+      interval: 5000,
       backoff: 2,
     });
 
-exports.getUsenameFromUserID = ({ userID, proxy }) =>
+exports.getUsernameFromUserID = ({ userID, proxy }) =>
   bluebirdRetry(() => (
     request.getAsync(_.omitBy({ url: `https://i.instagram.com/api/v1/users/${userID}/info/`, json: true, proxy: proxy }, x => x === null || x === undefined))
       .then(async ({ body }) => {
@@ -168,13 +168,13 @@ exports.getUsenameFromUserID = ({ userID, proxy }) =>
           await BlueBird.delay(5000);
         }
 
-        console.error(`getUsenameFromUserID - Unexpected response body ${JSON.stringify(body)}`)
+        console.error(`getUsernameFromUserID - Unexpected response body ${JSON.stringify(body)}`)
         throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
       })
   ), {
       max_tries: 3,
       throw_original: true,
-      interval: 1000,
+      interval: 5000,
       backoff: 2,
     });
 
@@ -206,7 +206,7 @@ exports.getTaggedUsersByCode = ({ shortcode, proxy }) =>
   ), {
       max_tries: 3,
       throw_original: true,
-      interval: 1000,
+      interval: 5000,
       backoff: 2,
     });
 
@@ -237,7 +237,7 @@ exports.getMediaLikesByCode = ({ shortcode, proxy }) => bluebirdRetry(() => (
 ), {
     max_tries: 3,
     throw_original: true,
-    interval: 1000,
+    interval: 5000,
     backoff: 2,
   });
 
@@ -268,7 +268,7 @@ exports.getMediaOwnerByCode = ({ shortcode, proxy }) => bluebirdRetry(() => (
 ), {
     max_tries: 3,
     throw_original: true,
-    interval: 1000,
+    interval: 5000,
     backoff: 2,
   });
 
@@ -301,7 +301,7 @@ exports.getMediaByLocation = ({ locationId, maxId = '', proxy }) =>
   ), {
       max_tries: 3,
       throw_original: true,
-      interval: 1000,
+      interval: 5000,
       backoff: 2,
     });
 
@@ -333,7 +333,7 @@ exports.getHashInfoByTag = ({ tag, maxId = '', proxy }) =>
   ), {
       max_tries: 3,
       throw_original: true,
-      interval: 1000,
+      interval: 5000,
       backoff: 2,
     });
 
@@ -352,6 +352,6 @@ exports.generalSearch = ({ query, proxy }) =>
   ), {
       max_tries: 3,
       throw_original: true,
-      interval: 1000,
+      interval: 5000,
       backoff: 2,
     });
