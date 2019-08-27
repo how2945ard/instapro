@@ -49,7 +49,7 @@ const getUserByUsername = exports.getUserByUsername = ({ username, proxy }) => b
           }
         });
         if (_.isEmpty(user)) {
-          throw new APIError()
+          throw new APIError(`Empty user object ${user}`)
         }
         return user;
       })
