@@ -58,7 +58,18 @@ const getUserByUsername = exports.getUserByUsername = ({ username, proxy }) =>
         }
       });
       if (_.isEmpty(user)) {
-        throw new APIError(`Empty user object ${JSON.stringify(user)}`)
+        return request.getAsync(
+          _.omitBy({ url: `http://www.instagram.com/${urlencode(username)}?__a=1`, json: true, proxy: proxy },
+            x => x === null || x === undefined
+          )
+        )
+          .then(({ body }) => {
+            user = _.get(body, 'graphql.user')
+            if (_.isEmpty(user)) {
+              throw new APIError(`Empty user object ${JSON.stringify(user)}`)
+            }
+            return user
+          })
       }
       return user;
     })
