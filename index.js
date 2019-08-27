@@ -23,7 +23,6 @@ global.UnexpectedResponseStructure = createErrorClass(
 );
 
 const BlueBird = require('bluebird');
-const bluebirdRetry = require('bluebird-retry');
 
 const _ = require('lodash');
 
@@ -34,11 +33,11 @@ const cheerio = require('cheerio');
 
 const cookie = 'ig_pr=2';
 
-const getUserByUsername = exports.getUserByUsername = ({ username, proxy }) =>
+exports.getUserByUsername = ({ username, proxy }) =>
   request.getAsync(
-    _.omitBy({ url: `http://www.instagram.com/${urlencode(username)}`, json: true, proxy: proxy },
-      x => x === null || x === undefined
-    )
+    _.omitBy({ url: `http://www.instagram.com/${urlencode(username)}`, json: true, proxy },
+      x => x === null || x === undefined,
+    ),
   )
     .then(({ body }) => {
       const $ = cheerio.load(body);
@@ -59,26 +58,26 @@ const getUserByUsername = exports.getUserByUsername = ({ username, proxy }) =>
       });
       if (_.isEmpty(user)) {
         return request.getAsync(
-          _.omitBy({ url: `http://www.instagram.com/${urlencode(username)}?__a=1`, json: true, proxy: proxy },
-            x => x === null || x === undefined
-          )
+          _.omitBy({ url: `http://www.instagram.com/${urlencode(username)}?__a=1`, json: true, proxy },
+            x => x === null || x === undefined,
+          ),
         )
           .then(({ body }) => {
-            user = _.get(body, 'graphql.user')
+            user = _.get(body, 'graphql.user');
             if (_.isEmpty(user)) {
-              throw new APIError(`Empty user object ${JSON.stringify(user)}`)
+              throw new APIError(`Empty user object ${JSON.stringify(user)}`);
             }
-            return user
-          })
+            return user;
+          });
       }
       return user;
-    })
+    });
 
 exports.getMediaByCode = ({ shortcode, proxy }) =>
   request.getAsync(
-    _.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy: proxy },
-      x => x === null || x === undefined
-    )
+    _.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy },
+      x => x === null || x === undefined,
+    ),
   )
     .then(async ({ body }) => {
       if (body === 'Oops, an error occurred.\n') {
@@ -95,19 +94,19 @@ exports.getMediaByCode = ({ shortcode, proxy }) =>
         return null;
       }
       if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
-        console.log('Delaying request for 5 seconds')
+        console.log('Delaying request for 5 seconds');
         await BlueBird.delay(5000);
       }
 
-      console.error(`getMediaByCode - Unexpected response body ${JSON.stringify(body)}`)
+      console.error(`getMediaByCode - Unexpected response body ${JSON.stringify(body)}`);
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
-    })
+    });
 
 exports.getMediaCommentsByCode = ({ shortcode, proxy }) =>
   request.getAsync(
-    _.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy: proxy },
-      x => x === null || x === undefined
-    )
+    _.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy },
+      x => x === null || x === undefined,
+    ),
   )
     .then(async ({ body }) => {
       if (body === 'Oops, an error occurred.\n') {
@@ -124,19 +123,19 @@ exports.getMediaCommentsByCode = ({ shortcode, proxy }) =>
         return null;
       }
       if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
-        console.log('Delaying request for 5 seconds')
+        console.log('Delaying request for 5 seconds');
         await BlueBird.delay(5000);
       }
 
-      console.error(`getMediaCommentsByCode - Unexpected response body ${JSON.stringify(body)}`)
+      console.error(`getMediaCommentsByCode - Unexpected response body ${JSON.stringify(body)}`);
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
-    })
+    });
 
 exports.getUsernameFromUserID = ({ userID, proxy }) =>
   request.getAsync(
-    _.omitBy({ url: `https://i.instagram.com/api/v1/users/${userID}/info/`, json: true, proxy: proxy },
-      x => x === null || x === undefined
-    )
+    _.omitBy({ url: `https://i.instagram.com/api/v1/users/${userID}/info/`, json: true, proxy },
+      x => x === null || x === undefined,
+    ),
   )
     .then(async ({ body }) => {
       if (body === 'Oops, an error occurred.\n') {
@@ -153,19 +152,19 @@ exports.getUsernameFromUserID = ({ userID, proxy }) =>
         return null;
       }
       if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
-        console.log('Delaying request for 5 seconds')
+        console.log('Delaying request for 5 seconds');
         await BlueBird.delay(5000);
       }
 
-      console.error(`getUsernameFromUserID - Unexpected response body ${JSON.stringify(body)}`)
+      console.error(`getUsernameFromUserID - Unexpected response body ${JSON.stringify(body)}`);
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
-    })
+    });
 
 exports.getTaggedUsersByCode = ({ shortcode, proxy }) =>
   request.getAsync(
-    _.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy: proxy },
-      x => x === null || x === undefined
-    )
+    _.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy },
+      x => x === null || x === undefined,
+    ),
   )
     .then(async ({ body }) => {
       if (body === 'Oops, an error occurred.\n') {
@@ -182,19 +181,19 @@ exports.getTaggedUsersByCode = ({ shortcode, proxy }) =>
         return null;
       }
       if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
-        console.log('Delaying request for 5 seconds')
+        console.log('Delaying request for 5 seconds');
         await BlueBird.delay(5000);
       }
 
-      console.error(`getTaggedUsersByCode - Unexpected response body ${JSON.stringify(body)}`)
+      console.error(`getTaggedUsersByCode - Unexpected response body ${JSON.stringify(body)}`);
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
-    })
+    });
 
 exports.getMediaLikesByCode = ({ shortcode, proxy }) =>
   request.getAsync(
-    _.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy: proxy },
-      x => x === null || x === undefined
-    )
+    _.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy },
+      x => x === null || x === undefined,
+    ),
   )
     .then(async ({ body }) => {
       if (body === 'Oops, an error occurred.\n') {
@@ -211,19 +210,19 @@ exports.getMediaLikesByCode = ({ shortcode, proxy }) =>
         return null;
       }
       if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
-        console.log('Delaying request for 5 seconds')
+        console.log('Delaying request for 5 seconds');
         await BlueBird.delay(5000);
       }
 
-      console.error(`getMediaLikesByCode - Unexpected response body ${JSON.stringify(body)}`)
+      console.error(`getMediaLikesByCode - Unexpected response body ${JSON.stringify(body)}`);
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
-    })
+    });
 
 exports.getMediaOwnerByCode = ({ shortcode, proxy }) =>
   request.getAsync(
     _.omitBy(
-      { url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy: proxy },
-      x => x === null || x === undefined)
+      { url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy },
+      x => x === null || x === undefined),
   )
     .then(async ({ body }) => {
       if (body === 'Oops, an error occurred.\n') {
@@ -240,19 +239,19 @@ exports.getMediaOwnerByCode = ({ shortcode, proxy }) =>
         return null;
       }
       if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
-        console.log('Delaying request for 5 seconds')
+        console.log('Delaying request for 5 seconds');
         await BlueBird.delay(5000);
       }
 
-      console.error(`getMediaOwnerByCode - Unexpected response body ${JSON.stringify(body)}`)
+      console.error(`getMediaOwnerByCode - Unexpected response body ${JSON.stringify(body)}`);
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
-    })
+    });
 
 exports.getMediaByLocation = ({ locationId, maxId = '', proxy }) =>
   request.getAsync(
-    _.omitBy({ url: `https://www.instagram.com/explore/locations/${locationId}/?__a=1&max_id=${maxId}`, json: true, proxy: proxy },
-      x => x === null || x === undefined
-    )
+    _.omitBy({ url: `https://www.instagram.com/explore/locations/${locationId}/?__a=1&max_id=${maxId}`, json: true, proxy },
+      x => x === null || x === undefined,
+    ),
   )
     .then(async ({ body }) => {
       if (body === 'Oops, an error occurred.\n') {
@@ -269,19 +268,19 @@ exports.getMediaByLocation = ({ locationId, maxId = '', proxy }) =>
         return null;
       }
       if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
-        console.log('Delaying request for 5 seconds')
+        console.log('Delaying request for 5 seconds');
         await BlueBird.delay(5000);
       }
 
-      console.error(`getMediaByLocation - Unexpected response body ${JSON.stringify(body)}`)
+      console.error(`getMediaByLocation - Unexpected response body ${JSON.stringify(body)}`);
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
-    })
+    });
 
 exports.getHashInfoByTag = ({ tag, maxId = '', proxy }) =>
   request.getAsync(
-    _.omitBy({ url: `https://www.instagram.com/explore/tags/${urlencode(tag)}/?__a=1&max_id=${maxId}`, json: true, proxy: proxy },
-      x => x === null || x === undefined
-    )
+    _.omitBy({ url: `https://www.instagram.com/explore/tags/${urlencode(tag)}/?__a=1&max_id=${maxId}`, json: true, proxy },
+      x => x === null || x === undefined,
+    ),
   )
     .then(async ({ body }) => {
       if (body === 'Oops, an error occurred.\n') {
@@ -298,23 +297,23 @@ exports.getHashInfoByTag = ({ tag, maxId = '', proxy }) =>
         return null;
       }
       if (_.includes(JSON.stringify(body), 'Please wait a few minutes before you try again.')) {
-        console.log('Delaying request for 5 seconds')
+        console.log('Delaying request for 5 seconds');
         await BlueBird.delay(5000);
       }
 
-      console.error(`getHashInfoByTag - Unexpected response body ${JSON.stringify(body)}`)
+      console.error(`getHashInfoByTag - Unexpected response body ${JSON.stringify(body)}`);
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
-    })
+    });
 
 exports.generalSearch = ({ query, proxy }) =>
   request.getAsync(
-    _.omitBy({ url: `https://www.instagram.com/web/search/topsearch/?query=${urlencode(query)}`, json: true, proxy: proxy },
-      x => x === null || x === undefined
-    )
+    _.omitBy({ url: `https://www.instagram.com/web/search/topsearch/?query=${urlencode(query)}`, json: true, proxy },
+      x => x === null || x === undefined,
+    ),
   )
     .then(({ body }) => {
       if (body === 'Oops, an error occurred.\n') {
         throw new APIError('Oops, an error occurred.');
       }
       return body;
-    })
+    });
