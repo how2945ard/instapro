@@ -23,6 +23,7 @@
     "es6-promise": "^4.2.4",
     "isomorphic-fetch": "^2.2.1",
     "request": "^2.88.0",
-    "urlencode": "^1.1.0"
+    "urlencode": "^1.1.0",
+    "useragent-from-seed": "^1.0.1"
   }
 }

@@ -26,14 +26,38 @@ const BlueBird = require('bluebird');
 
 const _ = require('lodash');
 
-const request = BlueBird.promisifyAll(require('request'));
+let request = BlueBird.promisifyAll(require('request'));
 const urlencode = require('urlencode');
 
 const cheerio = require('cheerio');
 
 const cookie = 'ig_pr=2';
+const useragentFromSeed = require('useragent-from-seed');
 
-exports.getUserByUsername = async ({ username, proxy }) => {
+let userAgent = useragentFromSeed('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/604.3.5 (KHTML, like Gecko) Version/11.0.1 Safari/604.3.5');
+let signature = null;
+let csrfTokenCookie = null;
+
+const setUpDefaults = async () => {
+  if (
+    signature &&
+    csrfTokenCookie
+  ) {
+    request = request.defaults({
+      'User-Agent': userAgent,
+    });
+    return request;
+  }
+
+  request = request.defaults({
+    'User-Agent': userAgent,
+  });
+  request = BlueBird.promisifyAll(request);
+  return request;
+};
+
+const getUserByUsername = exports.getUserByUsername = async ({ username, proxy }) => {
+  request = await setUpDefaults();
   let user = await request.getAsync(
     _.omitBy({ url: `http://www.instagram.com/${urlencode(username)}?__a=1`, json: true, proxy },
       x => x === null || x === undefined,
@@ -67,15 +91,16 @@ exports.getUserByUsername = async ({ username, proxy }) => {
         });
         if (_.isEmpty(user)) {
           throw new APIError(`Empty user object ${JSON.stringify(user)}`);
-        }  
+        }
         return user;
       });
   }
   return user;
 };
 
-exports.getMediaByCode = ({ shortcode, proxy }) =>
-  request.getAsync(
+exports.getMediaByCode = async ({ shortcode, proxy }) => {
+  request = await setUpDefaults();
+  return request.getAsync(
     _.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy },
       x => x === null || x === undefined,
     ),
@@ -102,9 +127,11 @@ exports.getMediaByCode = ({ shortcode, proxy }) =>
       console.error(`getMediaByCode - Unexpected response body ${JSON.stringify(body)}`);
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
     });
+};
 
-exports.getMediaCommentsByCode = ({ shortcode, proxy }) =>
-  request.getAsync(
+exports.getMediaCommentsByCode = async ({ shortcode, proxy }) => {
+  request = await setUpDefaults();
+  return request.getAsync(
     _.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy },
       x => x === null || x === undefined,
     ),
@@ -131,9 +158,11 @@ exports.getMediaCommentsByCode = ({ shortcode, proxy }) =>
       console.error(`getMediaCommentsByCode - Unexpected response body ${JSON.stringify(body)}`);
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
     });
+};
 
-exports.getUsernameFromUserID = ({ userID, proxy }) =>
-  request.getAsync(
+exports.getUsernameFromUserID = async ({ userID, proxy }) => {
+  request = await setUpDefaults();
+  return request.getAsync(
     _.omitBy({ url: `https://i.instagram.com/api/v1/users/${userID}/info/`, json: true, proxy },
       x => x === null || x === undefined,
     ),
@@ -160,9 +189,11 @@ exports.getUsernameFromUserID = ({ userID, proxy }) =>
       console.error(`getUsernameFromUserID - Unexpected response body ${JSON.stringify(body)}`);
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
     });
+};
 
-exports.getTaggedUsersByCode = ({ shortcode, proxy }) =>
-  request.getAsync(
+exports.getTaggedUsersByCode = async ({ shortcode, proxy }) => {
+  request = await setUpDefaults();
+  return request.getAsync(
     _.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy },
       x => x === null || x === undefined,
     ),
@@ -189,9 +220,11 @@ exports.getTaggedUsersByCode = ({ shortcode, proxy }) =>
       console.error(`getTaggedUsersByCode - Unexpected response body ${JSON.stringify(body)}`);
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
     });
+};
 
-exports.getMediaLikesByCode = ({ shortcode, proxy }) =>
-  request.getAsync(
+exports.getMediaLikesByCode = async ({ shortcode, proxy }) => {
+  request = await setUpDefaults();
+  return request.getAsync(
     _.omitBy({ url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy },
       x => x === null || x === undefined,
     ),
@@ -218,9 +251,11 @@ exports.getMediaLikesByCode = ({ shortcode, proxy }) =>
       console.error(`getMediaLikesByCode - Unexpected response body ${JSON.stringify(body)}`);
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
     });
+};
 
-exports.getMediaOwnerByCode = ({ shortcode, proxy }) =>
-  request.getAsync(
+exports.getMediaOwnerByCode = async ({ shortcode, proxy }) => {
+  request = await setUpDefaults();
+  return request.getAsync(
     _.omitBy(
       { url: `https://www.instagram.com/p/${shortcode}/?__a=1`, json: true, proxy },
       x => x === null || x === undefined),
@@ -247,9 +282,11 @@ exports.getMediaOwnerByCode = ({ shortcode, proxy }) =>
       console.error(`getMediaOwnerByCode - Unexpected response body ${JSON.stringify(body)}`);
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
     });
+};
 
-exports.getMediaByLocation = ({ locationId, maxId = '', proxy }) =>
-  request.getAsync(
+exports.getMediaByLocation = async ({ locationId, maxId = '', proxy }) => {
+  request = await setUpDefaults();
+  return request.getAsync(
     _.omitBy({ url: `https://www.instagram.com/explore/locations/${locationId}/?__a=1&max_id=${maxId}`, json: true, proxy },
       x => x === null || x === undefined,
     ),
@@ -276,9 +313,11 @@ exports.getMediaByLocation = ({ locationId, maxId = '', proxy }) =>
       console.error(`getMediaByLocation - Unexpected response body ${JSON.stringify(body)}`);
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
     });
+};
 
-exports.getHashInfoByTag = ({ tag, maxId = '', proxy }) =>
-  request.getAsync(
+exports.getHashInfoByTag = async ({ tag, maxId = '', proxy }) => {
+  request = await setUpDefaults();
+  return request.getAsync(
     _.omitBy({ url: `https://www.instagram.com/explore/tags/${urlencode(tag)}/?__a=1&max_id=${maxId}`, json: true, proxy },
       x => x === null || x === undefined,
     ),
@@ -305,9 +344,11 @@ exports.getHashInfoByTag = ({ tag, maxId = '', proxy }) =>
       console.error(`getHashInfoByTag - Unexpected response body ${JSON.stringify(body)}`);
       throw new UnexpectedResponseStructure(`Unexpected response body ${JSON.stringify(body)}`);
     });
+};
 
-exports.generalSearch = ({ query, proxy }) =>
-  request.getAsync(
+exports.generalSearch = async ({ query, proxy }) => {
+  request = await setUpDefaults();
+  return request.getAsync(
     _.omitBy({ url: `https://www.instagram.com/web/search/topsearch/?query=${urlencode(query)}`, json: true, proxy },
       x => x === null || x === undefined,
     ),
@@ -318,3 +359,4 @@ exports.generalSearch = ({ query, proxy }) =>
       }
       return body;
     });
+};
