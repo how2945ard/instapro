@@ -33,45 +33,46 @@ const cheerio = require('cheerio');
 
 const cookie = 'ig_pr=2';
 
-exports.getUserByUsername = ({ username, proxy }) =>
-  request.getAsync(
-    _.omitBy({ url: `http://www.instagram.com/${urlencode(username)}`, json: true, proxy },
+exports.getUserByUsername = async ({ username, proxy }) => {
+  let user = await request.getAsync(
+    _.omitBy({ url: `http://www.instagram.com/${urlencode(username)}?__a=1`, json: true, proxy },
       x => x === null || x === undefined,
     ),
   )
     .then(({ body }) => {
-      const $ = cheerio.load(body);
-      let user = {};
-      let eleHTML = '';
-      if (
-        _.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.') ||
-        _.includes(JSON.stringify(body), 'Page Not Found')
-      ) {
-        return null;
-      }
-      $('body').children().each((i, e) => {
-        eleHTML = $(e).html();
-        const htmlContent = eleHTML.split('"ProfilePage":[')[1];
-        if (eleHTML.indexOf('window._sharedData') > -1 && htmlContent) {
-          user = _.get(JSON.parse(htmlContent.split(']},"hostname"')[0]), 'graphql.user');
-        }
-      });
-      if (_.isEmpty(user)) {
-        return request.getAsync(
-          _.omitBy({ url: `http://www.instagram.com/${urlencode(username)}?__a=1`, json: true, proxy },
-            x => x === null || x === undefined,
-          ),
-        )
-          .then(({ body }) => {
-            user = _.get(body, 'graphql.user');
-            if (_.isEmpty(user)) {
-              throw new APIError(`Empty user object ${JSON.stringify(user)}`);
-            }
-            return user;
-          });
-      }
-      return user;
+      return _.get(body, 'graphql.user');
     });
+  if (_.isEmpty(user)) {
+    user = await request.getAsync(
+      _.omitBy({ url: `http://www.instagram.com/${urlencode(username)}`, json: true, proxy },
+        x => x === null || x === undefined,
+      ),
+    )
+      .then(({ body }) => {
+        const $ = cheerio.load(body);
+        let user = {};
+        let eleHTML = '';
+        if (
+          _.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.') ||
+          _.includes(JSON.stringify(body), 'Page Not Found')
+        ) {
+          return null;
+        }
+        $('body').children().each((i, e) => {
+          eleHTML = $(e).html();
+          const htmlContent = eleHTML.split('"ProfilePage":[')[1];
+          if (eleHTML.indexOf('window._sharedData') > -1 && htmlContent) {
+            user = _.get(JSON.parse(htmlContent.split(']},"hostname"')[0]), 'graphql.user');
+          }
+        });
+        if (_.isEmpty(user)) {
+          throw new APIError(`Empty user object ${JSON.stringify(user)}`);
+        }  
+        return user;
+      });
+  }
+  return user;
+};
 
 exports.getMediaByCode = ({ shortcode, proxy }) =>
   request.getAsync(
