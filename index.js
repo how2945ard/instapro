@@ -56,7 +56,7 @@ const setUpDefaults = async () => {
   return request;
 };
 
-const getUserByUsername = exports.getUserByUsername = async ({ username, proxy }) => {
+exports.getUserByUsername = async ({ username, proxy }) => {
   request = await setUpDefaults();
   let user = await request.getAsync(
     _.omitBy({ url: `http://www.instagram.com/${urlencode(username)}?__a=1`, json: true, proxy },
