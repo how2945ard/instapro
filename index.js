@@ -48,30 +48,9 @@ const getUserByUsername = exports.getUserByUsername = ({ username, proxy }) => b
             user = _.get(JSON.parse(htmlContent.split(']},"hostname"')[0]), 'graphql.user');
           }
         });
-        return user;
-      })
-  ), {
-    max_tries: 3,
-    throw_original: true,
-    interval: 5000,
-    backoff: 2,
-  },
-);
-
-exports.getUserIdFromUsername = ({ username, proxy }) => bluebirdRetry(
-  () => (
-    request.getAsync(_.omitBy({ url: `http://www.instagram.com/${urlencode(username)}`, json: true, proxy: proxy }, x => x === null || x === undefined))
-      .then(({ body }) => {
-        const $ = cheerio.load(body);
-        let user = {};
-        let eleHTML = '';
-        $('body').children().each((i, e) => {
-          eleHTML = $(e).html();
-          const htmlContent = eleHTML.split('"ProfilePage":[')[1];
-          if (eleHTML.indexOf('window._sharedData') > -1 && htmlContent) {
-            user = _.get(JSON.parse(htmlContent.split(']},"hostname"')[0]), 'graphql.user.id');
-          }
-        });
+        if (_.isEmpty(user)) {
+          throw new APIError()
+        }
         return user;
       })
   ), {
