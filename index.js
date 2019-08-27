@@ -44,6 +44,12 @@ const getUserByUsername = exports.getUserByUsername = ({ username, proxy }) =>
       const $ = cheerio.load(body);
       let user = {};
       let eleHTML = '';
+      if (
+        _.includes(JSON.stringify(body), 'Sorry, this page isn&#39;t available.') ||
+        _.includes(JSON.stringify(body), 'Page Not Found')
+      ) {
+        return null;
+      }
       $('body').children().each((i, e) => {
         eleHTML = $(e).html();
         const htmlContent = eleHTML.split('"ProfilePage":[')[1];
