@@ -39,20 +39,10 @@ let signature = null;
 let csrfTokenCookie = null;
 
 const setUpDefaults = async () => {
-  if (
-    signature &&
-    csrfTokenCookie
-  ) {
-    request = request.defaults({
-      'User-Agent': userAgent,
-    });
-    return request;
-  }
-
+  request = BlueBird.promisifyAll(require('request'));
   request = request.defaults({
     'User-Agent': userAgent,
   });
-  request = BlueBird.promisifyAll(request);
   return request;
 };
 
@@ -67,8 +57,9 @@ exports.getUserByUsername = async ({ username, proxy }) => {
       return _.get(body, 'graphql.user');
     });
   if (_.isEmpty(user)) {
+    console.log('[getUserByUsername] ?__a=1 method failed, trying cheerio method ')
     user = await request.getAsync(
-      _.omitBy({ url: `http://www.instagram.com/${urlencode(username)}`, json: true, proxy },
+      _.omitBy({ url: `http://www.instagram.com/${urlencode(username)}`,  proxy },
         x => x === null || x === undefined,
       ),
     )
