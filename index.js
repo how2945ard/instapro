@@ -39,10 +39,10 @@ let signature = null;
 let csrfTokenCookie = null;
 
 const setUpDefaults = async () => {
-  request = BlueBird.promisifyAll(require('request'));
-  request = request.defaults({
+  request = require('request');
+  request = BlueBird.promisifyAll(request.defaults({
     'User-Agent': userAgent,
-  });
+  }));
   return request;
 };
 
@@ -59,7 +59,7 @@ exports.getUserByUsername = async ({ username, proxy }) => {
   if (_.isEmpty(user)) {
     console.log('[getUserByUsername] ?__a=1 method failed, trying cheerio method ')
     user = await request.getAsync(
-      _.omitBy({ url: `http://www.instagram.com/${urlencode(username)}`,  proxy },
+      _.omitBy({ url: `http://www.instagram.com/${urlencode(username)}`, proxy },
         x => x === null || x === undefined,
       ),
     )
